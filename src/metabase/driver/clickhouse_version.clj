@@ -16,8 +16,7 @@
 (def ^:private default-cache-ttl (* 60 60 1000))
 
 (def ^:private clickhouse-version-query
-  (str "WITH s AS (SELECT version() AS ver, splitByChar('.', ver) AS verSplit) "
-       "SELECT s.ver, toInt32(verSplit[1]), toInt32(verSplit[2]) FROM s"))
+  (str "SELECT ver, toInt32(verSplit[1]), toInt32(verSplit[2]) FROM (SELECT version() AS ver, splitByChar('.', ver) AS verSplit)"))
 
 (def ^:private ^{:arglists '([db-details])} get-clickhouse-version
   (memoize/ttl

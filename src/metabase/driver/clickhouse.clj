@@ -85,9 +85,10 @@
    options
    (fn [^java.sql.Connection conn]
      (when-not (sql-jdbc.execute/recursive-connection?)
-       (when session-timezone
-         (.setClientInfo conn com.clickhouse.jdbc.ClickHouseConnection/PROP_CUSTOM_HTTP_PARAMS
-                         (format "session_timezone=%s" session-timezone)))
+       (when (clickhouse-version/is-at-least? 23 6)
+         (when session-timezone
+           (.setClientInfo conn com.clickhouse.jdbc.ClickHouseConnection/PROP_CUSTOM_HTTP_PARAMS
+                          (format "session_timezone=%s" session-timezone))))
 
        (sql-jdbc.execute/set-best-transaction-level! driver conn)
        (sql-jdbc.execute/set-time-zone-if-supported! driver conn session-timezone)
